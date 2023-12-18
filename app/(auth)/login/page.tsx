@@ -1,8 +1,9 @@
 import { Logo } from '@/components/logo';
 import { Metadata } from 'next';
+import LoginForm from './_components/login-form';
 
 export const metadata: Metadata = {
-    title: 'Login'
+  title: 'Login'
 };
 
 export default function LoginPage() {
