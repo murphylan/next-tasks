@@ -1,3 +1,4 @@
+import { Navbar } from "./_components/navbar";
 
 const PlatFormLayout = ({
   children
@@ -5,9 +6,10 @@ const PlatFormLayout = ({
   children: React.ReactNode;
 }) => {
   return (
-    <main>
+    <div className="h-full">
+      <Navbar />
       {children}
-    </main>
+    </div>
   );
 };
 
