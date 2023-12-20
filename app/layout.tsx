@@ -12,12 +12,15 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  icons: [
-    {
-      url: "/logo.svg",
-      href: "/logo.svg"
-    }
-  ]
+  icons: {
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
+    other: {
+      rel: 'apple-touch-icon-precomposed',
+      url: '/logo.svg',
+    },
+  },
 }
 
 export default function RootLayout({

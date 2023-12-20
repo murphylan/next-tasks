@@ -46,7 +46,7 @@ export const Sidebar = ({
           id: "1",
           slug: "logo.svg",
           imageUrl: "logo.svg",
-          name: "1",
+          name: "菜单1",
         }
       },
       {
@@ -54,7 +54,7 @@ export const Sidebar = ({
           id: "2",
           slug: "logo.svg",
           imageUrl: "logo.svg",
-          name: "2",
+          name: "菜单2",
         }
       }
     ]
@@ -104,7 +104,7 @@ export const Sidebar = ({
         {userMemberships.data.map(({ organization }) => (
           <NavItem
             key={organization.id}
-            isActive={true}
+            isActive={false}
             isExpanded={expanded[organization.id]}
             organization={organization as Organization}
             onExpand={onExpand}
