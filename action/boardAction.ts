@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { Board } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export const getBoardList = async (): Promise<Board[] | undefined> => {
   const boards = await db.board.findMany({
@@ -29,7 +30,7 @@ export const createBoard = async (title: string): Promise<Board | undefined> => 
       title,
     }
   });
-
+  revalidatePath(`/dashboard`);
   return board;
 }
 

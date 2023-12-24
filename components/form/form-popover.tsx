@@ -1,9 +1,11 @@
 "use client";
 
-import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X, XCircle } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
 import { ElementRef, useRef } from "react";
-import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import * as zod from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,8 +15,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { FormInput } from "./form-input";
+import { cn } from "@/lib/utils";
+import { useFormStatus } from "react-dom";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import { FormSubmit } from "./form-submit";
+import { toast } from "sonner";
+import { createBoard } from "@/action/boardAction";
+import { revalidatePath } from "next/cache";
+
+// Define your schema using zod
+const boardSchema = zod.object({
+  title: zod.string().min(3, {
+    message: "Title 字符长度太短了。"
+  }),
+});
+
+type FormData = zod.infer<typeof boardSchema>;
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -32,11 +49,25 @@ export const FormPopover = ({
   const router = useRouter();
   const closeRef = useRef<ElementRef<"button">>(null);
 
+  const { pending } = useFormStatus();
 
-  const onSubmit = (formData: FormData) => {
-    const title = formData.get("title") as string;
-    const image = formData.get("image") as string;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting, isDirty, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(boardSchema),
+  });
 
+  async function onSubmit(data: FormData) {
+    console.log(isSubmitting);
+    console.log(data);
+
+    const board = await createBoard(data.title);
+
+    toast.success("Board created!");
+    closeRef.current?.click();
+    router.push("/dashboard");
   }
 
   return (
@@ -61,13 +92,40 @@ export const FormPopover = ({
             <X className="h-4 w-4" />
           </Button>
         </PopoverClose>
-        <form action={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-4">
-            <FormInput
-              id="title"
-              label="Board title"
-              type="text"
-            />
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <Label
+                  htmlFor="title"
+                  className="text-xs font-semibold text-neutral-700"
+                >
+                  Board title
+                </Label>
+                <Input
+                  id="title"
+                  type="text"
+                  placeholder="Enter your title"
+                  disabled={pending}
+                  className={cn(
+                    "text-sm px-2 py-1 h-7",
+                    "",
+                  )}
+                  {...register("title", { required: true })}
+                  aria-describedby={`title-error`}
+                />
+              </div>
+              {errors?.title && (
+                <div
+                  id="title-error"
+                  aria-live="polite"
+                  className="flex items-center font-medium p-2 border border-rose-500 bg-rose-500/10 rounded-sm text-red-600 text-sm"
+                >
+                  <XCircle className="h-4 w-4 mr-2" />
+                  {errors?.title?.message}
+                </div>
+              )}
+            </div>
           </div>
           <FormSubmit className="w-full">
             Create
