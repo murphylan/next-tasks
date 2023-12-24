@@ -1,18 +1,60 @@
+import { notFound, redirect } from "next/navigation";
 
+import { BoardNavbar } from "./_components/board-navbar";
+import { auth } from "@/auth";
+import { getBoardById } from "@/action/boardAction";
 
-const OrganizationLayout = ({
-  children
+export async function generateMetadata({
+  params
+}: {
+  params: { boardId: string; };
+}) {
+  const user = await auth();
+
+  if (!user) {
+    return {
+      title: "Board",
+    };
+  }
+
+  const board = await getBoardById(params.boardId);
+
+  return {
+    title: board?.title || "Board",
+  };
+}
+
+const BoardIdLayout = async ({
+  children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { boardId: string; };
 }) => {
+  const user = await auth();
+
+  if (!user) {
+    redirect("/dashboard");
+  }
+
+  const board = await getBoardById(params.boardId);
+
+  if (!board) {
+    notFound();
+  }
+
   return (
-    <main className="pt-20 md:pt-24 px-4 max-w-6xl 2xl:max-w-screen-2xl mx-auto">
-      <div className="flex gap-x-7">
-       
+    <div
+      className="relative h-full bg-no-repeat bg-cover bg-center"
+    // style={{ backgroundImage: `url(${board.imageFullUrl})` }}
+    >
+      <BoardNavbar data={board} />
+      <div className="absolute inset-0 bg-black/10" />
+      <main className="relative pt-28 h-full">
         {children}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 };
 
-export default OrganizationLayout;
+export default BoardIdLayout;

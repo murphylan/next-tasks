@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { signOut } from "@/auth";
 
 export const Navbar = () => {
@@ -18,12 +18,6 @@ export const Navbar = () => {
         <Logo />
         <div className="space-x-4 md:block md:w-auto flex items-center justify-between w-full">
           <form action={handleSubmit}>
-            {/* <Button size="sm" variant="outline" asChild>
-              <Link href="/login">
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-              </Link>
-            </Button> */}
             <Button size="sm" type="submit">
               <LogOut className="mr-2 h-4 w-4" /> Sign Out
             </Button>
