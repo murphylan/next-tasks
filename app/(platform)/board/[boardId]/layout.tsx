@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { BoardNavbar } from "./_components/board-navbar";
 import { auth } from "@/auth";
-import { getBoardById } from "@/action/boardAction";
+import { getBoardById } from "@/action/board/boardAction";
 
 export async function generateMetadata({
   params

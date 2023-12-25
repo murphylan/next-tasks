@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/lib/db";
-import { getBoardList } from "@/action/boardAction";
+import { getBoardList } from "@/action/board/boardAction";
 import { FormPopover } from "@/components/form/form-popover";
 import { Hint } from "@/components/hint";
 

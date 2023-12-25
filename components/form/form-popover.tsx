@@ -21,17 +21,11 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { FormSubmit } from "./form-submit";
 import { toast } from "sonner";
-import { createBoard } from "@/action/boardAction";
+import { createBoard } from "@/action/board/boardAction";
 import { revalidatePath } from "next/cache";
+import { createBoardSchema } from "@/action/board/schema";
 
-// Define your schema using zod
-const boardSchema = zod.object({
-  title: zod.string().min(3, {
-    message: "Title 字符长度太短了。"
-  }),
-});
-
-type FormData = zod.infer<typeof boardSchema>;
+type FormData = zod.infer<typeof createBoardSchema>;
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -56,7 +50,7 @@ export const FormPopover = ({
     register,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = useForm<FormData>({
-    resolver: zodResolver(boardSchema),
+    resolver: zodResolver(createBoardSchema),
   });
 
   async function onSubmit(data: FormData) {
