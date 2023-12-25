@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { Board } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export const getBoardList = async (): Promise<Board[] | undefined> => {
   const boards = await db.board.findMany({
@@ -53,6 +54,7 @@ export const deleteBoard = async (id: string): Promise<Board | undefined> => {
       id,
     },
   });
-
+  revalidatePath(`/dashboard`);
+  redirect(`/dashboard`);
   return board;
 }

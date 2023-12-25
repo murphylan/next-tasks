@@ -10,6 +10,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { deleteBoard } from "@/action/board/boardAction";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 interface BoardOptionsProps {
   id: string;
@@ -22,8 +25,9 @@ export const BoardOptions = ({ id }: BoardOptionsProps) => {
   //   }
   // });
 
-  const onDelete = () => {
+  const onDelete = async () => {
     // execute({ id });
+    const board = await deleteBoard(id);
   };
 
   return (

@@ -80,8 +80,9 @@ export const BoardTitleForm = ({
               <FormItem>
                 <FormControl>
                   <Input placeholder={title} {...field}
+                    ref={inputRef}
                     onBlur={onBlur}
-                    className="text-lg font-bold px-[7px] py-1 h-7 bg-transparent focus-visible:outline-none focus-visible:ring-transparent border-none"
+                    className="w-96 text-lg font-bold px-[7px] py-1 h-7 bg-transparent focus-visible:outline-none focus-visible:ring-transparent border-none"
                   />
                 </FormControl>
                 <FormMessage />
