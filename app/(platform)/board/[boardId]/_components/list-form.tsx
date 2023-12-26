@@ -24,7 +24,7 @@ import { ListWrapper } from "./list-wrapper";
 
 export const ListForm = () => {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams<{ boardId: string }>();
 
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
@@ -62,7 +62,7 @@ export const ListForm = () => {
   const onSubmit = async (formData: FormData) => {
     console.log(formData);
 
-    const list = await createList(formData.title, formData.boardId);
+    const list = await createList(formData.title, params.boardId);
     toast.success(`List "${list?.title}" created`);
     disableEditing();
     router.refresh();
@@ -76,7 +76,9 @@ export const ListForm = () => {
     return (
       <ListWrapper>
         <Form {...form}>
-          <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)} className="w-full p-3 rounded-md bg-white space-y-4 shadow-md"
+          <form ref={formRef}
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full p-3 rounded-md bg-white space-y-4 shadow-md"
           >
             <FormField
               control={form.control}
@@ -93,11 +95,6 @@ export const ListForm = () => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-            <input
-              hidden
-              defaultValue={params.boardId}
-              name="boardId"
             />
             <div className="flex items-center gap-x-1">
               <Button type="submit">Submit</Button>
