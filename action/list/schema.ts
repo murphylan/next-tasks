@@ -6,6 +6,5 @@ export const createListSchema = z.object({
     invalid_type_error: "Title is required",
   }).min(3, {
     message: "Title is too short",
-  }),
-  boardId: z.string(),
+  })
 });
