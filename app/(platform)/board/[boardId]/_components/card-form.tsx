@@ -1,19 +1,23 @@
 "use client";
 
-import { toast } from "sonner";
+import { createCard } from "@/action/card/cardAction";
+import { createCardSchema } from "@/action/card/schema";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import {
-  forwardRef,
-  useRef,
   ElementRef,
   KeyboardEventHandler,
+  forwardRef,
+  useRef,
 } from "react";
-import { useParams } from "next/navigation";
-import { useOnClickOutside, useEventListener } from "usehooks-ts";
-
-import { Button } from "@/components/ui/button";
-import { FormSubmit } from "@/components/form/form-submit";
-import { FormTextarea } from "@/components/form/form-textarea";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { z } from "zod";
 
 interface CardFormProps {
   listId: string;
@@ -28,18 +32,9 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   disableEditing,
   isEditing,
 }, ref) => {
-  const params = useParams();
+  const router = useRouter();
+  const params = useParams<{ boardId: string }>();
   const formRef = useRef<ElementRef<"form">>(null);
-
-  // const { execute, fieldErrors } = useAction(createCard, {
-  //   onSuccess: (data) => {
-  //     toast.success(`Card "${data.title}" created`);
-  //     formRef.current?.reset();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error);
-  //   },
-  // });
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -57,43 +52,54 @@ export const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     }
   };
 
-  const onSubmit = (formData: FormData) => {
-    const title = formData.get("title") as string;
-    const listId = formData.get("listId") as string;
-    const boardId = params.boardId as string;
+  type FormData = z.infer<typeof createCardSchema>;
+  const form = useForm<FormData>({
+    resolver: zodResolver(createCardSchema),
+    defaultValues: {
+      title: '',
+    },
+  })
 
-    // execute({ title, listId, boardId });
+  const onSubmit = async (formData: FormData) => {
+    console.log(formData);
+
+    const card = await createCard(formData.title, listId, params.boardId,);
+    toast.success(`List "${card?.title}" created`);
+    disableEditing();
+    router.refresh();
   };
 
   if (isEditing) {
     return (
-      <form
-        ref={formRef}
-        action={onSubmit}
-        className="m-1 py-0.5 px-1 space-y-4"
-      >
-        <FormTextarea
-          id="title"
-          onKeyDown={onTextareakeyDown}
-          ref={ref}
-          placeholder="Enter a title for this card..."
-          // errors={fieldErrors}
-        />
-        <input
-          hidden
-          id="listId"
-          name="listId"
-          value={listId}
-        />
-        <div className="flex items-center gap-x-1">
-          <FormSubmit>
-            Add card
-          </FormSubmit>
-          <Button onClick={disableEditing} size="sm" variant="ghost">
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-      </form>
+      <Form {...form}>
+        <form
+          ref={formRef}
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="m-1 py-0.5 px-1 space-y-4"
+        >
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea  {...field}
+                    onKeyDown={onTextareakeyDown}
+                    ref={ref}
+                    placeholder="Enter a title for this card..."
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <div className="flex items-center gap-x-1">
+            <Button type="submit">Add card</Button>
+            <Button onClick={disableEditing} size="sm" variant="ghost">
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        </form>
+      </Form >
     )
   }
 

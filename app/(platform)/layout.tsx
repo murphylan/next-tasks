@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import { Navbar } from "./_components/navbar";
 
 const PlatFormLayout = ({
@@ -9,6 +10,7 @@ const PlatFormLayout = ({
     <div className="h-full">
       <Navbar />
       {children}
+      <Toaster />
     </div>
   );
 };
