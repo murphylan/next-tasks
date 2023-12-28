@@ -1,13 +1,24 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast"
 import { List } from "@prisma/client";
+import { ElementRef, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
-import { useState, useRef, ElementRef } from "react";
 
-import { FormInput } from "@/components/form/form-input";
-
+import { updateList } from "@/action/list/listAction";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { ListOptions } from "./list-options";
+
+const formSchema = z.object({
+  title: z.string().min(3, {
+    message: "Title 字符长度太短了。"
+  }).max(50),
+});
 
 interface ListHeaderProps {
   data: List;
@@ -18,6 +29,7 @@ export const ListHeader = ({
   data,
   onAddCard,
 }: ListHeaderProps) => {
+  const router = useRouter();
   const [title, setTitle] = useState(data.title);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -36,6 +48,28 @@ export const ListHeader = ({
     setIsEditing(false);
   };
 
+  type FormData = z.infer<typeof formSchema>;
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: '',
+    },
+  })
+
+  const onSubmit = async (formData: FormData) => {
+    console.log(formData);
+
+    if (formData.title === title) {
+      return disableEditing();
+    }
+    // setTitle(formData.title);
+    const list = await updateList(data.id, data.boardId, formData.title);
+
+    toast.success(`List "${list?.title}" created`);
+    disableEditing();
+    router.refresh();
+  };
+
   // const { execute } = useAction(updateList, {
   //   onSuccess: (data) => {
   //     toast.success(`Renamed to "${data.title}"`);
@@ -47,21 +81,21 @@ export const ListHeader = ({
   //   }
   // });
 
-  const handleSubmit = (formData: FormData) => {
-    const title = formData.get("title") as string;
-    const id = formData.get("id") as string;
-    const boardId = formData.get("boardId") as string;
+  // const handleSubmit = (formData: FormData) => {
+  //   const title = formData.get("title") as string;
+  //   const id = formData.get("id") as string;
+  //   const boardId = formData.get("boardId") as string;
 
-    if (title === data.title) {
-      return disableEditing();
-    }
+  //   if (title === data.title) {
+  //     return disableEditing();
+  //   }
 
-    // execute({
-    //   title,
-    //   id,
-    //   boardId,
-    // });
-  }
+  //   // execute({
+  //   //   title,
+  //   //   id,
+  //   //   boardId,
+  //   // });
+  // }
 
   const onBlur = () => {
     formRef.current?.requestSubmit();
@@ -78,23 +112,40 @@ export const ListHeader = ({
   return (
     <div className="pt-2 px-2 text-sm font-semibold flex justify-between items-start- gap-x-2">
       {isEditing ? (
-        <form 
-          ref={formRef}
-          action={handleSubmit}  
-          className="flex-1 px-[2px]"
-        >
-          <input hidden id="id" name="id" value={data.id} />
-          <input hidden id="boardId" name="boardId" value={data.boardId} />
-          <FormInput
-            ref={inputRef}
-            onBlur={onBlur}
-            id="title"
-            placeholder="Enter list title.."
-            defaultValue={title}
-            className="text-sm px-[7px] py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white"
-          />
-          <button type="submit" hidden />
-        </form>
+        <Form {...form}>
+          <form
+            ref={formRef}
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex-1 px-[2px]"
+          >
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input  {...field}
+                      ref={inputRef}
+                      onBlur={onBlur}
+                      placeholder="Enter list title.."
+                      defaultValue={title}
+                      className="text-sm px-[7px] py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            {/* <FormInput
+              ref={inputRef}
+              onBlur={onBlur}
+              id="title"
+              placeholder="Enter list title.."
+              defaultValue={title}
+              className="text-sm px-[7px] py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white"
+            /> */}
+            <button type="submit" hidden />
+          </form>
+        </Form>
       ) : (
         <div
           onClick={enableEditing}

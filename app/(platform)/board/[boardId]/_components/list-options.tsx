@@ -14,7 +14,7 @@ import {
   PopoverTrigger
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { deleteList } from "@/action/list/listAction";
+import { copyList, deleteList } from "@/action/list/listAction";
 
 interface ListOptionsProps {
   data: List;
@@ -27,26 +27,6 @@ export const ListOptions = ({
 }: ListOptionsProps) => {
   const closeRef = useRef<ElementRef<"button">>(null);
 
-  // const { execute: executeDelete } = useAction(deleteList, {
-  //   onSuccess: (data) => {
-  //     toast.success(`List "${data.title}" deleted`);
-  //     closeRef.current?.click();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error);
-  //   }
-  // });
-
-  // const { execute: executeCopy } = useAction(copyList, {
-  //   onSuccess: (data) => {
-  //     toast.success(`List "${data.title}" copied`);
-  //     closeRef.current?.click();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error);
-  //   }
-  // });
-
   const onDelete = (formData: FormData) => {
     const id = formData.get("id") as string;
     const boardId = formData.get("boardId") as string;
@@ -58,7 +38,8 @@ export const ListOptions = ({
     const id = formData.get("id") as string;
     const boardId = formData.get("boardId") as string;
 
-    // executeCopy({ id, boardId });
+    copyList(id, boardId);
+    closeRef.current?.click();
   };
 
   return (

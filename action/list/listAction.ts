@@ -64,3 +64,75 @@ export const deleteList = async (id: string, boardId: string): Promise<List | un
   redirect(`/board/${boardId}`);
   return list;
 }
+
+export const copyList = async (id: string, boardId: string) => {
+
+  try {
+    const listToCopy = await db.list.findUnique({
+      where: {
+        id,
+        boardId,
+      },
+      include: {
+        cards: true,
+      },
+    });
+
+    if (!listToCopy) {
+      return null;
+    }
+
+    const lastList = await db.list.findFirst({
+      where: { boardId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    const newOrder = lastList ? lastList.order + 1 : 1;
+
+    const list = await db.list.create({
+      data: {
+        boardId: listToCopy.boardId,
+        title: `${listToCopy.title} - Copy`,
+        order: newOrder,
+        cards: {
+          // Assuming listToCopy.cards is an array of objects
+          create: listToCopy.cards.map((card) => ({
+            title: card.title,
+            description: card.description,
+            order: card.order,
+          })),
+        },
+      },
+      include: {
+        cards: true,
+      },
+    });
+
+
+    revalidatePath(`/board/${boardId}`);
+    return list;
+  } catch (error) {
+    return null;
+  }
+
+}
+
+export const updateList = async (id: string, boardId: string, title: string) => {
+  try {
+    const list = await db.list.update({
+      where: {
+        id,
+        boardId,
+      },
+      data: {
+        title,
+      },
+    });
+    revalidatePath(`/board/${boardId}`);
+    return list;
+  } catch (error) {
+    return null
+  }
+
+}
