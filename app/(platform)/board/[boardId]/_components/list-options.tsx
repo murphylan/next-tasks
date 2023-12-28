@@ -14,6 +14,7 @@ import {
   PopoverTrigger
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { deleteList } from "@/action/list/listAction";
 
 interface ListOptionsProps {
   data: List;
@@ -50,7 +51,7 @@ export const ListOptions = ({
     const id = formData.get("id") as string;
     const boardId = formData.get("boardId") as string;
 
-    // executeDelete({ id, boardId });
+    deleteList(id, boardId);
   };
 
   const onCopy = (formData: FormData) => {

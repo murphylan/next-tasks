@@ -4,16 +4,7 @@ import { db } from "@/lib/db";
 import { List } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { getBoardById } from "../board/boardAction";
-
-export const getLists = async (): Promise<List[] | undefined> => {
-  const lists = await db.list.findMany({
-    orderBy: {
-      createdAt: "desc"
-    }
-  });
-
-  return lists;
-}
+import { redirect } from "next/navigation";
 
 export const createList = async (title: string, boardId: string): Promise<List | null> => {
   const board = await getBoardById(boardId);
@@ -38,5 +29,38 @@ export const createList = async (title: string, boardId: string): Promise<List |
     },
   });
   revalidatePath(`/dashboard/${boardId}`);
+  return list;
+}
+
+export const getLists = async (boardId: string) => {
+
+  const lists = await db.list.findMany({
+    where: {
+      boardId: boardId,
+    },
+    include: {
+      cards: {
+        orderBy: {
+          order: "asc",
+        },
+      },
+    },
+    orderBy: {
+      order: "asc",
+    },
+  });
+
+  return lists;
+}
+
+export const deleteList = async (id: string, boardId: string): Promise<List | undefined> => {
+  const list = await db.list.delete({
+    where: {
+      id,
+      boardId,
+    },
+  });
+  revalidatePath(`/board/${boardId}`);
+  redirect(`/board/${boardId}`);
   return list;
 }
