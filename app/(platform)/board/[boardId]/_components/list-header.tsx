@@ -52,7 +52,7 @@ export const ListHeader = ({
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
+      title: title,
     },
   })
 
@@ -62,40 +62,13 @@ export const ListHeader = ({
     if (formData.title === title) {
       return disableEditing();
     }
-    // setTitle(formData.title);
-    const list = await updateList(data.id, data.boardId, formData.title);
 
+    const list = await updateList(data.id, data.boardId, formData.title);
+    setTitle(formData.title);
     toast.success(`List "${list?.title}" created`);
     disableEditing();
     router.refresh();
   };
-
-  // const { execute } = useAction(updateList, {
-  //   onSuccess: (data) => {
-  //     toast.success(`Renamed to "${data.title}"`);
-  //     setTitle(data.title);
-  //     disableEditing();
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error);
-  //   }
-  // });
-
-  // const handleSubmit = (formData: FormData) => {
-  //   const title = formData.get("title") as string;
-  //   const id = formData.get("id") as string;
-  //   const boardId = formData.get("boardId") as string;
-
-  //   if (title === data.title) {
-  //     return disableEditing();
-  //   }
-
-  //   // execute({
-  //   //   title,
-  //   //   id,
-  //   //   boardId,
-  //   // });
-  // }
 
   const onBlur = () => {
     formRef.current?.requestSubmit();
@@ -128,22 +101,12 @@ export const ListHeader = ({
                       ref={inputRef}
                       onBlur={onBlur}
                       placeholder="Enter list title.."
-                      defaultValue={title}
                       className="text-sm px-[7px] py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white"
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
-            {/* <FormInput
-              ref={inputRef}
-              onBlur={onBlur}
-              id="title"
-              placeholder="Enter list title.."
-              defaultValue={title}
-              className="text-sm px-[7px] py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white"
-            /> */}
-            <button type="submit" hidden />
           </form>
         </Form>
       ) : (
