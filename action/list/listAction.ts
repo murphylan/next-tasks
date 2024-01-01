@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from "@/lib/db";
-import { List } from "@prisma/client";
+import { Card, List } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { getBoardById } from "../board/boardAction";
 import { redirect } from "next/navigation";
@@ -136,3 +136,52 @@ export const updateList = async (id: string, boardId: string, title: string) => 
   }
 
 }
+
+export const updateListOrder = async (items: List[], boardId: string) => {
+  let lists;
+  try {
+    const transaction = items.map((list) =>
+      db.list.update({
+        where: {
+          id: list.id,
+        },
+        data: {
+          order: list.order,
+        },
+      })
+    );
+
+    lists = await db.$transaction(transaction);
+    revalidatePath(`/board/${boardId}`);
+    return lists;
+  } catch (error) {
+    return null;
+  }
+}
+
+
+export const updateCardOrder = async (items: Card[], boardId: string) => {
+  let updatedCards;
+
+  try {
+    const transaction = items.map((card) =>
+      db.card.update({
+        where: {
+          id: card.id,
+        },
+        data: {
+          order: card.order,
+          listId: card.listId,
+        },
+      }),
+    );
+
+    updatedCards = await db.$transaction(transaction);
+  } catch (error) {
+    return null;
+  }
+
+  revalidatePath(`/board/${boardId}`);
+  return updatedCards;
+}
+

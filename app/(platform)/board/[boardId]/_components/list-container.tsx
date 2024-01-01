@@ -5,11 +5,18 @@ import { ListForm } from "./list-form";
 import { ListWithCards } from "@/types";
 import { ListItem } from "./list-item";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { updateCardOrder, updateListOrder } from "@/action/list/listAction";
 
 interface ListContainerProps {
   data: ListWithCards[];
   boardId: string;
 };
+
+function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
+  const [removed] = list.splice(startIndex, 1);
+  list.splice(endIndex, 0, removed);
+  return list.slice();
+}
 
 export const ListContainer = ({
   data,
@@ -39,16 +46,16 @@ export const ListContainer = ({
     }
 
     // User moves a list
-    // if (type === "list") {
-    //   const items = reorder(
-    //     orderedData,
-    //     source.index,
-    //     destination.index,
-    //   ).map((item, index) => ({ ...item, order: index }));
+    if (type === "list") {
+      const items = reorder(
+        orderedData,
+        source.index,
+        destination.index,
+      ).map((item, index) => ({ ...item, order: index }));
 
-    //   setOrderedData(items);
-    //   executeUpdateListOrder({ items, boardId });
-    // }
+      setOrderedData(items);
+      updateListOrder(items, boardId);
+    }
 
     // User moves a card
     if (type === "card") {
@@ -74,23 +81,20 @@ export const ListContainer = ({
 
       // Moving the card in the same list
       if (source.droppableId === destination.droppableId) {
-        // const reorderedCards = reorder(
-        //   sourceList.cards,
-        //   source.index,
-        //   destination.index,
-        // );
+        const reorderedCards = reorder(
+          sourceList.cards,
+          source.index,
+          destination.index,
+        );
 
-        // reorderedCards.forEach((card, idx) => {
-        //   card.order = idx;
-        // });
+        reorderedCards.forEach((card, idx) => {
+          card.order = idx;
+        });
 
-        // sourceList.cards = reorderedCards;
+        sourceList.cards = reorderedCards;
 
         setOrderedData(newOrderedData);
-        // executeUpdateCardOrder({
-        //   boardId: boardId,
-        //   items: reorderedCards,
-        // });
+        updateCardOrder(reorderedCards, boardId);
         // User moves the card to another list
       } else {
         // Remove card from the source list
@@ -112,10 +116,7 @@ export const ListContainer = ({
         });
 
         setOrderedData(newOrderedData);
-        // executeUpdateCardOrder({
-        //   boardId: boardId,
-        //   items: destList.cards,
-        // });
+        updateCardOrder(destList.cards, boardId);
       }
     }
   }
