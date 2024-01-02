@@ -12,3 +12,14 @@ Next steps:
 
 More information in our documentation:
 https://pris.ly/d/getting-started
+
+
+# .env
+
+```
+
+  DATABASE_URL="file:./dev.db"
+
+  AUTH_SECRET=vQaQImYn1zzIK4Qjs9ZwXwduUS53S7hadjnZGED/eMg=
+
+```
