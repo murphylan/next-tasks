@@ -6,6 +6,7 @@ import { ListWithCards } from "@/types";
 import { ListItem } from "./list-item";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { updateCardOrder, updateListOrder } from "@/action/list/listAction";
+import { toast } from "sonner";
 
 interface ListContainerProps {
   data: ListWithCards[];
@@ -54,7 +55,14 @@ export const ListContainer = ({
       ).map((item, index) => ({ ...item, order: index }));
 
       setOrderedData(items);
-      updateListOrder(items, boardId);
+      let updateList = updateListOrder(items, boardId);
+      if (!!updateList) {
+        updateList.then((lists) => {
+          lists?.forEach((list) => {
+            toast.success(`List "${list.title}" reOrdered`);
+          });
+        });
+      }
     }
 
     // User moves a card
@@ -94,7 +102,14 @@ export const ListContainer = ({
         sourceList.cards = reorderedCards;
 
         setOrderedData(newOrderedData);
-        updateCardOrder(reorderedCards, boardId);
+        let updatedCards = updateCardOrder(reorderedCards, boardId);
+        if (!!updatedCards) {
+          updatedCards.then((cards) => {
+            cards?.forEach((card) => {
+              toast.success(`Card "${card.title}" reOrdered`);
+            });
+          });
+        }
         // User moves the card to another list
       } else {
         // Remove card from the source list
@@ -116,7 +131,14 @@ export const ListContainer = ({
         });
 
         setOrderedData(newOrderedData);
-        updateCardOrder(destList.cards, boardId);
+        let updatedCards = updateCardOrder(destList.cards, boardId);
+        if (!!updatedCards) {
+          updatedCards.then((cards) => {
+            cards?.forEach((card) => {
+              toast.success(`Card "${card.title}" reOrdered`);
+            });
+          });
+        }
       }
     }
   }
