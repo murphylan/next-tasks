@@ -50,7 +50,7 @@ const MarketingPage = () => {
         协作、项目管理，助力团队提升工作效率。无论是办公室还是远程办公，你的团队工作方式独一无二，Taskify助你一网打尽，完成所有目标。
       </div>
       <Button className="mt-6" size="lg" asChild>
-        <Link href="/dashboard">
+        <Link href="/board">
           邀请你来体验
         </Link>
       </Button>

@@ -34,7 +34,7 @@ const BoardIdLayout = async ({
   const user = await auth();
 
   if (!user) {
-    redirect("/dashboard");
+    redirect("/board");
   }
 
   const board = await getBoardById(params.boardId);

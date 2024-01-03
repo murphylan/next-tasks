@@ -11,14 +11,14 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      const isOnBoard = nextUrl.pathname.startsWith('/board');
       const isOnLogin = nextUrl.pathname.startsWith('/login')
-      if (isOnDashboard) {
+      if (isOnBoard) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
       } else if (isLoggedIn) {
-        if (isOnDashboard || isOnLogin) {
-          return Response.redirect(new URL('/dashboard', nextUrl));
+        if (isOnBoard || isOnLogin) {
+          return Response.redirect(new URL('/board', nextUrl));
         } else {
           return true;
         }

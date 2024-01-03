@@ -1,4 +1,4 @@
-import { Logo } from '@/components/logo';
+import { Flex, Text, Button } from '@radix-ui/themes';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,7 +8,10 @@ export const metadata: Metadata = {
 export default function UserPage() {
   return (
     <main className="flex justify-center md:h-screen">
-      User list
+      <Flex direction="column" gap="2">
+        <Text>Hello from Radix Themes :)</Text>
+        <Button>Let's go</Button>
+      </Flex>
     </main>
   );
 }

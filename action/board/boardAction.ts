@@ -29,9 +29,10 @@ export const createBoard = async (title: string): Promise<Board | undefined> => 
   const board = await db.board.create({
     data: {
       title,
+      color: "bg-emerald-400"
     }
   });
-  revalidatePath(`/dashboard`);
+  revalidatePath(`/board`);
   return board;
 }
 
@@ -54,7 +55,7 @@ export const deleteBoard = async (id: string): Promise<Board | undefined> => {
       id,
     },
   });
-  revalidatePath(`/dashboard`);
-  redirect(`/dashboard`);
+  revalidatePath(`/board`);
+  redirect(`/board`);
   return board;
 }

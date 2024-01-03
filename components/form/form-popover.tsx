@@ -61,7 +61,7 @@ export const FormPopover = ({
 
     toast.success("Board created!");
     closeRef.current?.click();
-    router.push("/dashboard");
+    router.push("/board");
   }
 
   return (

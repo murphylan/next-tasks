@@ -16,7 +16,7 @@ export const Navbar = async () => {
           <Button size="sm" variant="outline" asChild>
             <Link href="/login">
               <LogIn className="mr-2 h-4 w-4" />
-              {user ? 'DashBoard' : 'Sign In'}
+              {user ? 'Board' : 'Sign In'}
             </Link>
           </Button>
           {/* <Button size="sm" type="submit">

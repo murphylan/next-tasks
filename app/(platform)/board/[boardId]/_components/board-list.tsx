@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { getBoardList } from "@/action/board/boardAction";
 import { FormPopover } from "@/components/form/form-popover";
 import { Hint } from "@/components/hint";
+import { cn } from "@/lib/utils";
 
 export const BoardList = async () => {
 
@@ -24,8 +25,11 @@ export const BoardList = async () => {
           <Link
             key={board.id}
             href={`/board/${board.id}`}
-            className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
-
+            className=
+            {cn(
+              "group relative aspect-video bg-no-repeat bg-center bg-cover rounded-sm h-full w-full p-2 overflow-hidden",
+              board.color
+            )}
           >
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
             <p className="relative font-semibold text-white">

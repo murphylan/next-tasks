@@ -28,7 +28,7 @@ export const createList = async (title: string, boardId: string): Promise<List |
       order: newOrder,
     },
   });
-  revalidatePath(`/dashboard/${boardId}`);
+  revalidatePath(`/board/${boardId}`);
   return list;
 }
 

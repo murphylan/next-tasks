@@ -6,7 +6,7 @@ import { BoardList } from "../../board/[boardId]/_components/board-list";
 import { CreditCard } from "lucide-react";
 import Image from "next/image";
 
-const DashboardPage = async () => {
+const BoardPage = async () => {
   const user = await auth();
 
   if (!user) {
@@ -45,4 +45,4 @@ const DashboardPage = async () => {
   )
 }
 
-export default DashboardPage;
+export default BoardPage;

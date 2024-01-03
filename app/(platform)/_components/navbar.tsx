@@ -20,10 +20,10 @@ export const Navbar = () => {
         <div className="space-x-4 md:block md:w-auto flex items-center justify-between w-full">
           <form action={handleSubmit}>
             {
-              (pathname !== '/dashboard') &&
+              (pathname !== '/board') &&
               <Button size="sm" variant="outline" asChild>
                 <Link href="/login">
-                  <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+                  <LayoutDashboard className="mr-2 h-4 w-4" /> Board
                 </Link>
               </Button>
             }
