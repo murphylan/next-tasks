@@ -54,7 +54,7 @@ export const Sidebar = ({
           id: "2",
           slug: "logo.svg",
           imageUrl: "logo.svg",
-          name: "菜单2",
+          name: "系统设置",
         }
       }
     ]

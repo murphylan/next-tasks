@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { BoardList } from "../board/[boardId]/_components/board-list";
+import { BoardList } from "../../board/[boardId]/_components/board-list";
 import { CreditCard } from "lucide-react";
 import Image from "next/image";
 
